@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Exam: {{ exam[1] }}{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<div class="container">
+    <h2>{{ exam[1] }}</h2>
+    <form id="exam-form">
+        {% for q in questions %}
+            <div class="question-block">
+                <h4>Q{{ loop.index }}: {{ q.text }}</h4>
+                {% if q.answer_alternatives and q.answer_alternatives|length > 0 %}
+                    {% for alt in q.answer_alternatives %}
+                        <label>
+                            <input type="checkbox" name="q{{ q.id }}_answers" value="{{ alt }}"> {{ alt }}
+                        </label>
+                    {% endfor %}
+                {% else %}
+                    <textarea name="q{{ q.id }}_text" rows="2" cols="40" placeholder="Type your answer..."></textarea>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit">Submit Answers</button>
+    </form>
+</div>
+{% endblock %}

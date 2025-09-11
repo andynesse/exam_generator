@@ -1,0 +1,130 @@
+/* Popup message styles */
+.popup-message {
+    padding: 1rem 2.5rem 1rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 1000;
+}
+.popup-success {
+    background: #28a745;
+}
+.popup-fail {
+    background: #dc3545;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: #333;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+}
+
+main {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+h1 {
+    color: #333;
+}
+
+button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+/* Exam Page Modern Styles */
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    padding: 32px 40px;
+}
+
+h2 {
+    color: #2d3748;
+    margin-bottom: 24px;
+    font-size: 2.2em;
+    font-weight: 700;
+}
+
+.question-block {
+    margin-bottom: 32px;
+    padding: 18px 24px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.question-block h4 {
+    color: #374151;
+    font-size: 1.15em;
+    margin-bottom: 12px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1em;
+    color: #4a5568;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    accent-color: #3182ce;
+    margin-right: 8px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 60px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    padding: 10px;
+    font-size: 1em;
+    background: #fff;
+    margin-bottom: 8px;
+    resize: vertical;
+}
+
+button[type="submit"] {
+    background: linear-gradient(90deg, #3182ce 0%, #63b3ed 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 32px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(49,130,206,0.08);
+    transition: background 0.2s;
+}
+
+button[type="submit"]:hover {
+    background: linear-gradient(90deg, #2563eb 0%, #4299e1 100%);
+}
