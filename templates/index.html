@@ -3,52 +3,47 @@
 {% block title %}Exam Generator Home{% endblock %}
 
 {% block body %}
-    <header>
-        <h1>Exam Generator</h1>
-    </header>
-    <main>
-        <h2>Welcome!</h2>
-        <p>This is the home page for your Exam Generator project.</p>
-        <p>Use this tool to create, manage, and generate exams easily.</p>
-        <button>Get Started</button>
-        <hr>
-        <h3>Create a New Exam</h3>
-        <form id="create-exam-form">
-            <label for="exam-name">Exam Name:</label>
-            <input type="text" id="exam-name" name="exam_name" required>
-            <br><br>
-            <label>Select PDFs to include:</label><br>
-            <select id="pdf-select" name="pdf_ids" multiple size="5" style="width: 100%;">
-                {% for pdf in pdfs %}
-                <option value="{{ pdf[0] }}">{{ pdf[1] }}</option>
+<header>
+    <h1>Exam Generator</h1>
+</header>
+<main>
+    <h2>Create a New Exam</h2>
+    <hr>
+            <form id="create-exam-form" method="POST" action="{{ url_for('web.create_exam') }}">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="popup-message popup-{{ category }}">{{ message }}</div>
                 {% endfor %}
-            </select>
-            <br><br>
-            <button type="submit">Generate Exam</button>
-        </form>
-        <hr>
-        <h3>Upload a PDF</h3>
-        <form id="pdf-upload-form" enctype="multipart/form-data">
-            <label for="pdf">Select PDF file:</label>
-            <input type="file" id="pdf" name="pdf" accept="application/pdf" required>
-            <button type="submit">Upload PDF</button>
-        </form>
-        <hr>
-        <h3>Existing Exams</h3>
-        {% if exams %}
-        <ul>
-            {% for exam in exams %}
-            <li><a href="/exam/{{ exam[0] }}"><strong>{{ exam[1] }}</strong></a> {% if exam[2] %}(Completed){% endif %} - Created: {{ exam[3] if exam[3] else 'N/A' }}</li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>No exams created yet.</p>
-        {% endif %}
-        <div id="popup-message" style="display:none;" class="popup-message">
-            <span id="popup-close" style="float:right;cursor:pointer;font-size:1.2em;font-weight:bold;">&times;</span>
-            <span id="popup-text"></span>
-        </div>
+                </div>
+            {% endif %}
+        {% endwith %}
+        <label for="exam-name">Exam Name:</label>
+        <input type="text" id="exam-name" name="exam_name" required>
+        <br><br>
+        <label for="exam-json">Paste Exam JSON:</label><br>
+    <textarea id="exam-json" name="exam_json" rows="10" cols="80" required placeholder='{"questions": [{"question": "...", "description": "...", "code": "...", "answer_alternatives": ["..."], "correct_answers": ["..."]}]}'></textarea>
+        <br><br>
+        <button type="submit">Create Exam</button>
+    </form>
+    <hr>
+    <h2>Existing Exams</h2>
+    <hr>
+    {% if exams %}
+    <ul>
+        {% for exam in exams %}
+        <li><a href="/exam/{{ exam[0] }}"><strong>{{ exam[1] }}</strong></a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No exams created yet.</p>
+    {% endif %}
+    <div id="popup-message" style="display:none;" class="popup-message">
+        <span id="popup-close" style="float:right;cursor:pointer;font-size:1.2em;font-weight:bold;">&times;</span>
+        <span id="popup-text"></span>
+    </div>
     <script src="{{ url_for('static', filename='js/popup.js') }}"></script>
     <script src="{{ url_for('static', filename='js/exam.js') }}"></script>
-    </main>
+</main>
 {% endblock %}

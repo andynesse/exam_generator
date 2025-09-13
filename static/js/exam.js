@@ -1,30 +1,33 @@
+// No JS needed for exam creation: form submits as regular POST and is handled by Flask backend.
+
 document.addEventListener('DOMContentLoaded', function() {
-    var createExamForm = document.getElementById('create-exam-form');
-    if (createExamForm) {
-        createExamForm.onsubmit = function(e) {
-            e.preventDefault();
-            var examName = document.getElementById('exam-name').value;
-            var pdfSelect = document.getElementById('pdf-select');
-            var selected = Array.from(pdfSelect.selectedOptions).map(opt => opt.value);
-            fetch('/create_exam', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({exam_name: examName, pdf_ids: selected})
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (typeof showPopup === 'function') {
-                    showPopup(data.status, data.message);
+    const form = document.getElementById('exam-form');
+    if (!form) return;
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Display correct answers under each question as a bullet list
+        document.querySelectorAll('.question-block').forEach(block => {
+            const correct = block.getAttribute('data-correct');
+            let answerDiv = block.querySelector('.user-answer');
+            if (!answerDiv) {
+                answerDiv = document.createElement('div');
+                answerDiv.className = 'user-answer';
+                block.appendChild(answerDiv);
+            }
+            if (correct) {
+                const correctArr = JSON.parse(correct);
+                if (Array.isArray(correctArr)) {
+                    if (correctArr.length) {
+                        answerDiv.innerHTML = `<strong>Correct answers:</strong><ul class='correct-list'>${correctArr.map(a => `<li>${a}</li>`).join('')}</ul>`;
+                    } else {
+                        answerDiv.innerHTML = `<strong>Correct answers:</strong> <em>None</em>`;
+                    }
+                } else {
+                    answerDiv.innerHTML = `<strong>Correct answer:</strong> <ul class='correct-list'><li>${correctArr}</li></ul>`;
                 }
-                if (data.status === 'success') {
-                    setTimeout(() => window.location.reload(), 1500);
-                }
-            })
-            .catch(() => {
-                if (typeof showPopup === 'function') {
-                    showPopup('fail', 'An error occurred while creating the exam.');
-                }
-            });
-        };
-    }
+            } else {
+                answerDiv.innerHTML = `<strong>Correct answer:</strong> <em>None</em>`;
+            }
+        });
+    });
 });

@@ -4,10 +4,12 @@ import os
 DB_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'exam.db')
 
 SCHEMA = '''
+
+
+DROP TABLE IF EXISTS correct_answers;
 DROP TABLE IF EXISTS answers;
 DROP TABLE IF EXISTS questions;
 DROP TABLE IF EXISTS exams;
-DROP TABLE IF EXISTS pdfs;
 
 CREATE TABLE exams (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,6 +21,8 @@ CREATE TABLE questions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     exam_id INTEGER NOT NULL,
     text TEXT NOT NULL,
+    description TEXT,
+    code TEXT,
     FOREIGN KEY (exam_id) REFERENCES exams(id) ON DELETE CASCADE
 );
 
@@ -26,40 +30,25 @@ CREATE TABLE answers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     question_id INTEGER NOT NULL,
     text TEXT NOT NULL,
-    is_true BOOLEAN NOT NULL,
     FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
 );
 
-CREATE TABLE pdfs (
+CREATE TABLE correct_answers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    filename TEXT NOT NULL,
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    size INTEGER,
-    mimetype TEXT,
-    extracted_data TEXT
+    question_id INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
 );
 '''
 
 EXAMPLE_EXAMS = [
     {"title": "Math Basics", "completed": False, "questions": [
-        {"text": "2 + 2 = 4", "answers": [
-            {"text": "True", "is_true": True},
-            {"text": "False", "is_true": False}
-        ]},
-        {"text": "5 * 0 = 5", "answers": [
-            {"text": "True", "is_true": False},
-            {"text": "False", "is_true": True}
-        ]}
+        {"question": "2 + 2 = ?", "description": "Simple addition question.", "code": "", "answer_alternatives": ["3", "4", "5", "6"], "correct_answers": ["4"]},
+        {"question": "5 * 0 = ?", "description": "Multiplication with zero.", "code": "", "answer_alternatives": ["0", "5", "10", "1"], "correct_answers": ["0"]}
     ]},
     {"title": "Science Facts", "completed": True, "questions": [
-        {"text": "Water boils at 100°C", "answers": [
-            {"text": "True", "is_true": True},
-            {"text": "False", "is_true": False}
-        ]},
-        {"text": "The sun is a planet", "answers": [
-            {"text": "True", "is_true": False},
-            {"text": "False", "is_true": True}
-        ]}
+        {"question": "Water boils at what temperature?", "description": "Boiling point of water.", "code": "", "answer_alternatives": ["90°C", "100°C", "120°C", "80°C"], "correct_answers": ["100°C"]},
+        {"question": "The sun is a:", "description": "Type of celestial body.", "code": "", "answer_alternatives": ["Planet", "Star", "Comet", "Asteroid"], "correct_answers": ["Star"]}
     ]}
 ]
 
@@ -73,10 +62,12 @@ def init_db():
         cursor.execute("INSERT INTO exams (title, completed) VALUES (?, ?)", (exam["title"], exam["completed"]))
         exam_id = cursor.lastrowid
         for q in exam["questions"]:
-            cursor.execute("INSERT INTO questions (exam_id, text) VALUES (?, ?)", (exam_id, q["text"]))
+            cursor.execute("INSERT INTO questions (exam_id, text, description, code) VALUES (?, ?, ?, ?)", (exam_id, q["question"], q.get("description", ""), q.get("code", "")))
             question_id = cursor.lastrowid
-            for a in q["answers"]:
-                cursor.execute("INSERT INTO answers (question_id, text, is_true) VALUES (?, ?, ?)", (question_id, a["text"], a["is_true"]))
+            for ans in q["answer_alternatives"]:
+                cursor.execute("INSERT INTO answers (question_id, text) VALUES (?, ?)", (question_id, ans))
+            for correct in q["correct_answers"]:
+                cursor.execute("INSERT INTO correct_answers (question_id, text) VALUES (?, ?)", (question_id, correct))
     conn.commit()
     conn.close()
 

@@ -8,8 +8,14 @@
     <h2>{{ exam[1] }}</h2>
     <form id="exam-form">
         {% for q in questions %}
-            <div class="question-block">
+            <div class="question-block" data-correct='{{ q.correct_answers|tojson }}'>
                 <h4>Q{{ loop.index }}: {{ q.text }}</h4>
+                {% if q.description %}
+                    <div class="question-description">{{ q.description }}</div>
+                {% endif %}
+                {% if q.code %}
+                    <pre class="question-code">{{ q.code }}</pre>
+                {% endif %}
                 {% if q.answer_alternatives and q.answer_alternatives|length > 0 %}
                     {% for alt in q.answer_alternatives %}
                         <label>
@@ -24,4 +30,5 @@
         <button type="submit">Submit Answers</button>
     </form>
 </div>
+<script src="{{ url_for('static', filename='js/exam.js') }}"></script>
 {% endblock %}
